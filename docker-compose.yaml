@@ -1,0 +1,43 @@
+version: '3'
+services:
+  airflow:
+    image: apache/airflow:latest
+    container_name: airflow
+    ports:
+      - "8080:8080"
+    environment:
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+    depends_on:
+      - postgres
+    networks:
+      - pipeline
+    volumes:
+      - ./dags:/usr/local/airflow/dags
+      - ./requirements.txt:/requirements.txt
+    command: sh -c "pip install --user -r /requirements.txt && airflow webserver"
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    ports:
+      - "9000:9000"
+    environment:
+      - MINIO_ACCESS_KEY=minioaccess
+      - MINIO_SECRET_KEY=miniosecret
+    volumes:
+      - ./data:/data
+    networks:
+      - pipeline
+
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_DB: airflow
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+    networks:
+      - pipeline
+
+networks:
+  pipeline:
