@@ -25,3 +25,4 @@
 [2023-10-28T22:01:32.763+0000] {manager.py:758} INFO - There are 0 files in /opt/airflow/dags
 [2023-10-28T22:06:33.686+0000] {manager.py:755} INFO - Searching for files in /opt/airflow/dags
 [2023-10-28T22:06:33.690+0000] {manager.py:758} INFO - There are 0 files in /opt/airflow/dags
+[2023-10-28T22:10:10.157+0000] {manager.py:469} INFO - Exiting gracefully upon receiving signal 15
