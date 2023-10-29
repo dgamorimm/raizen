@@ -1,24 +1,34 @@
 import pandas as pd
 import io
 
-def read_object_xls(response:object,
-                    line_start:int, 
-                    line_end:int, 
-                    col_start:int, 
-                    col_end:int)-> pd.DataFrame:
-    xls_content = response.read()
-    df = pd.read_excel(io.BytesIO(xls_content))
-    df = df.iloc[int(line_start):int(line_end), int(col_start):int(col_end)]
-    new_header = df.iloc[0]
-    df = df[1:]
-    df.columns = new_header
-    df = df.fillna('')
-    return df
+def read_object_csv(response:str | object)-> pd.DataFrame:
+    if type(response) == str:
+        return pd.read_csv(response, sep=';')
+    else:
+        csv_content = response.read()
+        df = pd.read_csv(io.BytesIO(csv_content), sep=';')
+        return df
 
 def read_object_xlsx(response:object)-> pd.DataFrame:
     xls_content = response.read()
     df = pd.read_excel(io.BytesIO(xls_content))
     return df
+
+def write_object_csv(client:object,
+                      bucket_name:str,
+                      csv_file_name:str,
+                      df : pd.DataFrame):
+    csv_buffer = io.StringIO()
+    df.to_csv(csv_buffer, index=False, sep=';')
+    csv_buffer.seek(0)
+    csv_bytes = csv_buffer.getvalue().encode('utf-8')
+
+    client.put_object(bucket_name, 
+                      csv_file_name + '.csv', 
+                      io.BytesIO(csv_bytes), 
+                      len(csv_bytes))
+    
+    print(f'Arquivo CSV {csv_file_name} enviado com sucesso')
 
 def write_object_xlsx(client:object,
                       bucket_name:str,

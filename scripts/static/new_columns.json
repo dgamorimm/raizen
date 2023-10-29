@@ -1,0 +1,10 @@
+{
+    "oil-derivative-fuels" : {
+        "ANO" : "year",
+        "MÊS" : "month",
+        "GRANDE REGIÃO" : "region",
+        "UNIDADE DA FEDERAÇÃO" : "uf",
+        "PRODUTO" : "product",
+        "VENDAS" : "volume"
+    }
+}
