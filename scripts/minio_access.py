@@ -7,8 +7,8 @@ class Client:
     def __enter__(self):
         self.client = Minio(
             'localhost:9000',
-            access_key='masoud',
-            secret_key='Strong#Pass#2022',
+            access_key='raizen',
+            secret_key='Raizen#Pass#2023',
             secure=False
         )
         return self.client
