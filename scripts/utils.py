@@ -24,7 +24,7 @@ def write_object_csv(client:object,
     csv_bytes = csv_buffer.getvalue().encode('utf-8')
 
     client.put_object(bucket_name, 
-                      csv_file_name + '.csv', 
+                      csv_file_name.replace('.csv', '') + '.csv', 
                       io.BytesIO(csv_bytes), 
                       len(csv_bytes))
     

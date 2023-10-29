@@ -10,6 +10,14 @@ def rename_columns(df : pd.DataFrame, new_columns:str) -> pd.DataFrame:
     
     return df
 
+def transpose_columns(df : pd.DataFrame,
+                      columns:list, 
+                      transpose_column:list, 
+                      column_name: str, 
+                      column_value_name:str) -> pd.DataFrame:
+    df = pd.melt(df, id_vars=columns, value_vars=transpose_column, var_name=column_name, value_name=column_value_name)
+    return df
+
 def concat_columns(df : pd.DataFrame, column_name:str, col_1: Any, col_2: Any) -> pd.DataFrame:
     df[column_name] = df[col_1].astype(str) + df[col_2].astype(str)
     return df
@@ -35,7 +43,7 @@ def replace_values(df : pd.DataFrame, column_name:str, old_value: str, new_value
     return df
 
 def title_columns(df : pd.DataFrame) -> pd.DataFrame:
-    df = df.map(lambda x: x.title() if isinstance(x, str) else x)
+    df = df.map(lambda x: x.title() if (isinstance(x, str)) & (x != 'm3') else x)
     return df
 
 def cast_type(df : pd.DataFrame) -> pd.DataFrame:

@@ -6,5 +6,25 @@
         "UNIDADE DA FEDERAÇÃO" : "uf",
         "PRODUTO" : "product",
         "VENDAS" : "volume"
+    },
+    "diesel":{
+        "COMBUSTÍVEL" : "product",
+        "ANO" : "year",
+        "REGIÃO" : "region",
+        "ESTADO" : "uf",
+        "UNIDADE" : "unit",
+        " Jan " : "JAN",
+        " Fev " : "FEV",
+        " Mar " : "MAR",
+        " Abr " : "ABR",
+        " Mai " : "MAI",
+        " Jun " : "JUN",
+        " Jul " : "JUL",
+        " Ago " : "AGO",
+        " Set " : "SET",
+        " Out " : "OUT",
+        " Nov " : "NOV",
+        " Dez " : "DEZ",
+        " TOTAL " : "total"
     }
 }
