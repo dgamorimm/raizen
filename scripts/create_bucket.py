@@ -1,6 +1,6 @@
 from minio_access import Client
 
-bucket_names = ["bronze", "silver"]
+bucket_names = ["landing-zone","bronze", "silver"]
 
 with Client() as client:
     for bucket_name in bucket_names:

@@ -1,6 +1,6 @@
 from minio_access import Client
 
-bucket_name = 'bronze'
+bucket_name = 'landing-zone'
 local_file = 'data/vendas-combustiveis-m3.xls'
 object_name = 'vendas-combustiveis-m3.xls'
 
