@@ -43,3 +43,37 @@ def write_object_xlsx(client:object,
                       len(excel_buffer.getvalue()),
                       content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     print(f'Arquivo excel {excel_file_name} enviado com sucesso')
+    
+def write_partitions_csv(client:object,
+                        bucket_name:str,
+                        df : pd.DataFrame):
+    
+    df['year_month'] = pd.to_datetime(df['year_month'])
+    df['year'] = df['year_month'].dt.year
+    df['month'] = df['year_month'].dt.strftime('%m')  # Extrai o mês como uma string de 2 dígitos
+    df['day'] = df['year_month'].dt.strftime('%d')
+    
+    
+    df.reset_index(inplace=True)
+   
+    # escrevendo as partições
+    i = 1
+    for _, group_df in  df.groupby(['year', 'month', 'day']):
+        year, month, day = group_df['year'].values[0], group_df['month'].values[0], group_df['day'].values[0]
+        partition_path = f'{year}/{month}/{day}'
+        
+        data = io.BytesIO(group_df.to_csv(index=False).encode())
+        
+        client.put_object(bucket_name,
+                        f'{partition_path}/part-000{i}.csv',
+                        data,
+                        len(data.getvalue()),
+                        content_type='text/csv')
+        i += 1
+    
+    # adicionando o indice
+    df.set_index('year', inplace=True)
+    df.set_index('month', inplace=True)
+    df.set_index('day', inplace=True)
+    
+    print("Particoes foram escritas com sucesso!")

@@ -54,3 +54,7 @@ def cast_type(df : pd.DataFrame) -> pd.DataFrame:
     df['volume'] = df['volume'].astype(float)
     df['created_at'] = pd.to_datetime(df['created_at'])
     return df
+
+def remove_column(df : pd.DataFrame, column_name: str) -> pd.DataFrame:
+    df = df.drop(column_name, axis=1)
+    return df
