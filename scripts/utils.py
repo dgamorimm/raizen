@@ -4,11 +4,11 @@ import io
 def read_object_xls(response:object,
                     line_start:int, 
                     line_end:int, 
-                    col_init:int, 
+                    col_start:int, 
                     col_end:int)-> pd.DataFrame:
     xls_content = response.read()
     df = pd.read_excel(io.BytesIO(xls_content))
-    df = df.iloc[line_start:line_end, col_init:col_end]
+    df = df.iloc[int(line_start):int(line_end), int(col_start):int(col_end)]
     new_header = df.iloc[0]
     df = df[1:]
     df.columns = new_header
@@ -28,7 +28,7 @@ def write_object_xlsx(client:object,
     df.to_excel(excel_buffer, index=False)
     excel_buffer.seek(0)
     client.put_object(bucket_name, 
-                      excel_file_name,
+                      excel_file_name + '.xlsx',
                       excel_buffer,
                       len(excel_buffer.getvalue()),
                       content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
