@@ -3,23 +3,16 @@ from utils import *
 from transformation import *
 from datetime import datetime
 from pytz import timezone
-from rich import print
-import argparse
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description='Tranformacao da Landing Zone Layer para a Bronze Layer'
-    )
-    parser.add_argument('--sbn', required=True, help='Nome do bucket de origem (sbn = source bucket name)')
-    parser.add_argument('--dbn', required=True, help='Nome do bucket de destino (dbn = dest bucket name)')
-    parser.add_argument('--obj', required=True, help='Nome do objeto de origem/destino(obj = object name)')
-    
-    
-    args = parser.parse_args()
-
+def bronze_etl_diesel(sbn,dbn, obj):
+    """
+        sbn = Nome do bucket de origem (sbn = source bucket name)
+        dbn = Nome do bucket de destino (dbn = dest bucket name)
+        obj = Nome do objeto de origem/destino(obj = object name)
+    """
     with Client() as client:
         
-        response = client.get_object(args.sbn, args.obj)
+        response = client.get_object(sbn, obj)
         
         df = read_object_csv(response)
         df = rename_columns(df, new_columns = 'diesel')
@@ -39,6 +32,6 @@ if __name__ == '__main__':
         df = df[['year_month', 'uf', 'product', 'unit', 'volume', 'created_at']]
         
         write_object_csv(client,
-                          bucket_name=args.dbn,
-                          csv_file_name=args.obj,
+                          bucket_name=dbn,
+                          csv_file_name=obj,
                           df=df)

@@ -8,6 +8,11 @@ from airflow import DAG
 from airflow.utils.dates import days_ago
 from operators.raizen_operator import RaizenOperator
 from datetime import timedelta
+from scripts.create_bucket import create_bucket
+from scripts.load_landing_zone import load_landing_zone
+from scripts.bronze_etl_diesel import bronze_etl_diesel
+from scripts.bronze_etl_oil_dev_fuels import bronze_etl_oil_dev_fuels
+from scripts.silver_etl_partition import silver_etl_partition
 
 default_args = {
     'owner': 'Douglas Amorim',
@@ -25,82 +30,100 @@ with DAG(
         catchup=True
     ) as dag:
     
-    create_bucket = RaizenOperator(
+    task_create_bucket = RaizenOperator(
             task_id='create_bucket',
-            python_script='../scripts/create_bucket.py',
+            python_callable=create_bucket,
             start_time="{{ data_interval_start.strftime('%Y-%m-%dT%H:%M:%S.00Z') }}",
             end_time="{{ data_interval_end.strftime('%Y-%m-%dT%H:%M:%S.00Z') }}",
             dag=dag,
         )
     
-    landing_zone_oil_dev_fuels = RaizenOperator(
+    task_landing_zone_oil_dev_fuels = RaizenOperator(
             task_id='landing_zone_oil_dev_fuels',
-            python_script='../scripts/load-landing-zone.py',
+            python_callable=load_landing_zone,
             start_time="{{ data_interval_start.strftime('%Y-%m-%dT%H:%M:%S.00Z') }}",
             end_time="{{ data_interval_end.strftime('%Y-%m-%dT%H:%M:%S.00Z') }}",
-            sbn_parameter='landing-zone',
-            son_parameter='oil-derivative-fuels',
-            src_parameter='https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/vdpb/vendas-derivados-petroleo-e-etanol/vendas-combustiveis-m3-2000-2023.csv',
+            op_kwargs={
+                    'sbn' : 'landing-zone', 
+                    'son' : 'oil-derivative-fuels', 
+                    'src' : 'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/vdpb/vendas-derivados-petroleo-e-etanol/vendas-combustiveis-m3-2000-2023.csv'
+                },
+            provide_context=True,
             dag=dag,
         )
 
-    landing_zone_diesel = RaizenOperator(
+    task_landing_zone_diesel = RaizenOperator(
             task_id='landing_zone_diesel',
-            python_script='../scripts/load-landing-zone.py',
+            python_callable=load_landing_zone,
             start_time="{{ data_interval_start.strftime('%Y-%m-%dT%H:%M:%S.00Z') }}",
             end_time="{{ data_interval_end.strftime('%Y-%m-%dT%H:%M:%S.00Z') }}",
-            sbn_parameter='landing-zone',
-            son_parameter='diesel',
-            src_parameter='oil-derivative-fuels.csv',
+            op_kwargs={
+                    'sbn' : 'landing-zone', 
+                    'son' : 'diesel', 
+                    'src' : 'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/vendas-oleo-diesel-tipo-m3-2020.csv'
+                },
+            provide_context=True,
             dag=dag,
         )
     
-    bronze_etl_oil_dev_fuels = RaizenOperator(
+    task_bronze_etl_oil_dev_fuels = RaizenOperator(
             task_id='bronze_etl_oil_dev_fuels',
-            python_script='../scripts/bronze-etl-oil-dev-fuels.py',
+            python_callable=bronze_etl_oil_dev_fuels,
             start_time="{{ data_interval_start.strftime('%Y-%m-%dT%H:%M:%S.00Z') }}",
             end_time="{{ data_interval_end.strftime('%Y-%m-%dT%H:%M:%S.00Z') }}",
-            sbn_parameter='landing-zone',
-            dbn_parameter='bronze',
-            obj_parameter='diesel.csv',
+            op_kwargs={
+                    'sbn' : 'landing-zone', 
+                    'dbn' : 'bronze', 
+                    'obj' : 'oil-derivative-fuels.csv'
+                },
+            provide_context=True,
             dag=dag,
         )
 
-    bronze_etl_diesel = RaizenOperator(
+    task_bronze_etl_diesel = RaizenOperator(
             task_id='bronze_etl_diesel',
-            python_script='../scripts/bronze-etl-diesel.py',
+            python_callable=bronze_etl_diesel,
             start_time="{{ data_interval_start.strftime('%Y-%m-%dT%H:%M:%S.00Z') }}",
             end_time="{{ data_interval_end.strftime('%Y-%m-%dT%H:%M:%S.00Z') }}",
-            sbn_parameter='landing-zone',
-            dbn_parameter='bronze',
-            obj_parameter='diesel.csv',
+            op_kwargs={
+                    'sbn' : 'landing-zone', 
+                    'dbn' : 'bronze', 
+                    'obj' : 'diesel.csv'
+                },
+            provide_context=True,
             dag=dag,
         )
     
-    silver_etl_oil_dev_fuels = RaizenOperator(
+    task_silver_etl_oil_dev_fuels = RaizenOperator(
             task_id='silver_etl_oil_dev_fuels',
-            python_script='../scripts/silver-etl-partition.py',
+            python_callable=silver_etl_partition,
             start_time="{{ data_interval_start.strftime('%Y-%m-%dT%H:%M:%S.00Z') }}",
             end_time="{{ data_interval_end.strftime('%Y-%m-%dT%H:%M:%S.00Z') }}",
-            sbn_parameter='bronze',
-            dbn_parameter='silver',
-            part_parameter='oil-derivative-fuels',
-            obj_parameter='oil-derivative-fuels.csv',
+            op_kwargs={
+                    'sbn' : 'bronze', 
+                    'dbn' : 'silver',
+                    'part': 'oil-derivative-fuels',
+                    'obj' : 'oil-derivative-fuels.csv'
+                },
+            provide_context=True,
             dag=dag,
         )
 
-    silver_etl_diesel = RaizenOperator(
+    task_silver_etl_diesel = RaizenOperator(
             task_id='silver_etl_diesel',
-            python_script='../scripts/silver-etl-partition.py',
+            python_callable=silver_etl_partition,
             start_time="{{ data_interval_start.strftime('%Y-%m-%dT%H:%M:%S.00Z') }}",
             end_time="{{ data_interval_end.strftime('%Y-%m-%dT%H:%M:%S.00Z') }}",
-            sbn_parameter='bronze',
-            dbn_parameter='silver',
-            part_parameter='diesel',
-            obj_parameter='diesel.csv',
+            op_kwargs={
+                    'sbn' : 'bronze', 
+                    'dbn' : 'silver',
+                    'part': 'diesel',
+                    'obj' : 'diesel.csv'
+                },
+            provide_context=True,
             dag=dag,
         )
     
-    create_bucket >> [landing_zone_oil_dev_fuels, landing_zone_diesel]
-    landing_zone_oil_dev_fuels >> bronze_etl_oil_dev_fuels >> silver_etl_oil_dev_fuels
-    landing_zone_diesel >> bronze_etl_diesel >> silver_etl_diesel
+    create_bucket >> [task_landing_zone_oil_dev_fuels, task_landing_zone_diesel]
+    task_landing_zone_oil_dev_fuels >> task_bronze_etl_oil_dev_fuels >> task_silver_etl_oil_dev_fuels
+    task_landing_zone_diesel >> task_bronze_etl_diesel >> task_silver_etl_diesel
