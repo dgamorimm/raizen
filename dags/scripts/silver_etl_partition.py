@@ -1,6 +1,6 @@
-from minio_access import Client
-from utils import write_partitions_csv, read_object_csv
-from transformation import *
+from scripts.minio_access import Client
+from scripts.utils import write_partitions_csv, read_object_csv
+from scripts.transformation import *
 from datetime import datetime
 from pytz import timezone
 

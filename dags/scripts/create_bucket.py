@@ -1,4 +1,4 @@
-from minio_access import Client
+from scripts.minio_access import Client
 
 def create_bucket():
     bucket_names = ["landing-zone","bronze", "silver"]

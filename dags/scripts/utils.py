@@ -1,7 +1,7 @@
 import pandas as pd
 import io
 
-def read_object_csv(response:str | object)-> pd.DataFrame:
+def read_object_csv(response)-> pd.DataFrame:
     if type(response) == str:
         return pd.read_csv(response, sep=';')
     else:

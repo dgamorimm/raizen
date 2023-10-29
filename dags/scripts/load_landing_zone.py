@@ -1,5 +1,5 @@
-from minio_access import Client
-from utils import *
+from scripts.minio_access import Client
+from scripts.utils import *
 
 def load_landing_zone(sbn, son, src):
     

@@ -12,8 +12,8 @@ default_args = {
     'owner': 'Douglas Amorim',
     'email': 'douglas_amorimm@outlook.com',
     'depends_on_past': True,
-    'retries': 3,
-    'retry_delay': timedelta(minutes=5)
+    # 'retries': 3,
+    # 'retry_delay': timedelta(minutes=5)
 }
 
 with DAG(
@@ -118,6 +118,6 @@ with DAG(
             dag=dag,
         )
     
-    create_bucket >> [task_landing_zone_oil_dev_fuels, task_landing_zone_diesel]
+    task_create_bucket >> [task_landing_zone_oil_dev_fuels, task_landing_zone_diesel]
     task_landing_zone_oil_dev_fuels >> task_bronze_etl_oil_dev_fuels >> task_silver_etl_oil_dev_fuels
     task_landing_zone_diesel >> task_bronze_etl_diesel >> task_silver_etl_diesel

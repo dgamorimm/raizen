@@ -1,6 +1,6 @@
-from minio_access import Client
-from utils import *
-from transformation import *
+from scripts.minio_access import Client
+from scripts.utils import *
+from scripts.transformation import *
 from datetime import datetime
 from pytz import timezone
 
