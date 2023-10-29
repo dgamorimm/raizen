@@ -46,6 +46,7 @@ def write_object_xlsx(client:object,
     
 def write_partitions_csv(client:object,
                         bucket_name:str,
+                        partition_name:str,
                         df : pd.DataFrame):
     
     df['year_month'] = pd.to_datetime(df['year_month'])
@@ -60,7 +61,7 @@ def write_partitions_csv(client:object,
     i = 1
     for _, group_df in  df.groupby(['year', 'month', 'day']):
         year, month, day = group_df['year'].values[0], group_df['month'].values[0], group_df['day'].values[0]
-        partition_path = f'{year}/{month}/{day}'
+        partition_path = f'{partition_name}/{year}/{month}/{day}'
         
         data = io.BytesIO(group_df.to_csv(index=False).encode())
         

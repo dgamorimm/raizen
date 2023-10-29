@@ -11,6 +11,7 @@ if __name__ == '__main__':
     )
     parser.add_argument('--sbn', required=True, help='Nome do bucket de origem (sbn = source bucket name)')
     parser.add_argument('--dbn', required=True, help='Nome do bucket de destino (dbn = dest bucket name)')
+    parser.add_argument('--part', required=True, help='Nome da particao (part = particao)')
     parser.add_argument('--obj', required=True, help='Nome do objeto de origem/destino(obj = object name)')
     
     
@@ -25,5 +26,6 @@ if __name__ == '__main__':
         df = add_lit_column(df, column_name='created_at', value=datetime.now(timezone('America/Sao_Paulo')))
         
         write_partitions_csv(client,
-                             args.dbn,
-                             df)
+                             bucket_name=args.dbn,
+                             partition_name=args.part,
+                             df=df)
