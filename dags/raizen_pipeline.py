@@ -1,9 +1,3 @@
-import sys
-import os
-
-diretorio_raiz = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.dirname(diretorio_raiz))
-
 from airflow import DAG
 from airflow.utils.dates import days_ago
 from operators.raizen_operator import RaizenOperator
