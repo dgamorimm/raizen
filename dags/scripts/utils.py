@@ -51,30 +51,26 @@ def write_partitions_csv(client:object,
     
     df['year_month'] = pd.to_datetime(df['year_month'])
     df['year'] = df['year_month'].dt.year
-    df['month'] = df['year_month'].dt.strftime('%m')  # Extrai o mês como uma string de 2 dígitos
-    df['day'] = df['year_month'].dt.strftime('%d')
+    df['month'] = df['year_month'].dt.strftime('%m') 
     
     
     df.reset_index(inplace=True)
    
     # escrevendo as partições
-    i = 1
-    for _, group_df in  df.groupby(['year', 'month', 'day']):
-        year, month, day = group_df['year'].values[0], group_df['month'].values[0], group_df['day'].values[0]
-        partition_path = f'{partition_name}/{year}/{month}/{day}'
+    for _, group_df in  df.groupby(['year', 'month']):
+        year, month = group_df['year'].values[0], group_df['month'].values[0]
+        partition_path = f'{partition_name}/{year}/{month}'
         
         data = io.BytesIO(group_df.to_csv(index=False).encode())
         
         client.put_object(bucket_name,
-                        f'{partition_path}/part-000{i}.csv',
+                        f'{partition_path}/part-0001.csv',
                         data,
                         len(data.getvalue()),
                         content_type='text/csv')
-        i += 1
     
     # adicionando o indice
     df.set_index('year', inplace=True)
     df.set_index('month', inplace=True)
-    df.set_index('day', inplace=True)
     
     print("Particoes foram escritas com sucesso!")
