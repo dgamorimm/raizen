@@ -8,6 +8,22 @@
 
 <br>
 
+>## Folders 📕
+- | dags : pasta pareada com o container 
+  - | operators : operadores custom do airflow
+  - | scripts : python functions
+    - | static : arquivo estático json
+- | data : pasta pareada com o container
+- | images : imagens para o md
+- | logs : pasta pareada com o container
+- | notebooks : análise exploratória de dados da última camada após execução do pipe
+- | .env : variáveis de ambiente
+- | .gitignore : arquivos fora do versionamento
+- | pipeline.yaml : arquivo de marcação para subida dos containers
+- | requirements.txt : arquivo para instalar as libs para desenvolvimento 
+
+<br>
+
 >## Arquitetura 📐
 ![Arquitetura](images/archicteture.png)
 
@@ -45,4 +61,4 @@
 
 >## Notebooks 💻
 
-![Notebooks](notebooks/eda.ipynb)
+![Análise Exploratória de Dados](notebooks/eda.ipynb)
