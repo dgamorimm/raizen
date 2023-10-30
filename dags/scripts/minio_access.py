@@ -1,4 +1,5 @@
 from minio import Minio
+from os import getenv
 
 class Client:
     def __init__(self) -> None:
@@ -6,9 +7,9 @@ class Client:
 
     def __enter__(self):
         self.client = Minio(
-            'localhost:9000',
-            access_key='raizen',
-            secret_key='Raizen#Pass#2023',
+            'minio:9000',
+            access_key=getenv('MINIO_ROOT_USER'),
+            secret_key=getenv('MINIO_ROOT_PASSWORD'),
             secure=False
         )
         return self.client
