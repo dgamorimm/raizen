@@ -1,3 +1,5 @@
 .venv
 .vscode
-logs
+logs/dag_id=pipeline_raizen
+logs/dag_processor_manager
+logs/scheduler
