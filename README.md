@@ -2,13 +2,16 @@
 <img src="/images/raizen.png" alt="Raizen" width="200" height="100">
 
 # _**Engenharia de Dados**_
-<hr>
 
 >## UP 🚀
 - ```docker-compose -f pipeline.yaml up```
 
+<br>
+
 >## Arquitetura 📐
 ![Arquitetura](images/archicteture.png)
+
+<br>
 
 >## Pipeline 🔩
 
@@ -21,6 +24,8 @@
 - **silver_etl_oil_dev_fuels**: criação das partições e as indexações de acordo com a solicitação do teste para o dataframe de derivados de combustiveis de petróleo e armazena na camada silver
 
 ![Pipeline](images/pipeline-airflow.png)
+
+<br>
 
 >## Buckets 📦
 - **landing-zone**: criação dos buckets para o lake
