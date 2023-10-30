@@ -61,7 +61,7 @@ def write_partitions_csv(client:object,
         year, month = group_df['year'].values[0], group_df['month'].values[0]
         partition_path = f'{partition_name}/{year}/{month}'
         
-        data = io.BytesIO(group_df.to_csv(index=False).encode())
+        data = io.BytesIO(group_df.to_csv(index=False, sep=';').encode())
         
         client.put_object(bucket_name,
                         f'{partition_path}/part-0001.csv',

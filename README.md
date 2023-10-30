@@ -40,3 +40,9 @@
       - part-0001.csv
 
 ![Pipeline](images/minio.png)
+
+<br>
+
+>## Notebooks 💻
+
+![Notebooks](notebooks/eda.ipynb)
