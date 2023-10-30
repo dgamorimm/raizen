@@ -19,8 +19,8 @@ default_args = {
 with DAG(
         "pipeline_raizen",
         default_args=default_args,
-        start_date=days_ago(2),
-        schedule_interval='@daily',
+        start_date=days_ago(1),
+        schedule_interval='@once',
         catchup=True
     ) as dag:
     
